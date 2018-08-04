@@ -1,5 +1,5 @@
 {
-	"name": "get-chrome-tabs",
+	"name": "get-browser-tabs",
 	"version": "0.2.0",
 	"description": "Get information of the currently opened Chrome tabs, for example URLs and titles",
 	"repository": "shinnn/get-chrome-tabs",

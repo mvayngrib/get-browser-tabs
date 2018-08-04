@@ -1,63 +1,7 @@
 'use strict';
 
 if (process.platform === 'darwin') {
-	const {inspect} = require('util');
-
-	const getStdout = require('execa').stdout;
-	const inspectWithKind = require('inspect-with-kind');
-	const isPlainObj = require('is-plain-obj');
-
-	const APP_ERROR = 'Expected `app` option to be either \'canary\' or \'chromium\'';
-	const nameIdMap = new Map([
-		['canary', 'com.google.Chrome.canary'],
-		['chromium', 'org.chromium.Chromium']
-	]);
-
-	module.exports = function getChromeTabs(...args) {
-		const argLen = args.length;
-		const [option = {}] = args;
-
-		if (argLen === 1) {
-			if (!isPlainObj(option)) {
-				throw new TypeError(`Expected an <Object> to specify get-chrome-tabs option, but got ${
-					inspectWithKind(option)
-				}.`);
-			}
-
-			if (option.app !== undefined) {
-				if (typeof option.app !== 'string') {
-					throw new TypeError(`${APP_ERROR}, but got a non-string value ${inspectWithKind(option.app)}.`);
-				}
-
-				if (!nameIdMap.has(option.app)) {
-					throw new RangeError(`${APP_ERROR}, but got neither of them ${inspect(option.app)}.`);
-				}
-			}
-		} else if (argLen !== 0) {
-			throw new RangeError(`Expected 0 or 1 argument ([<Object>]), but got ${argLen} arguments.`);
-		}
-
-		const id = nameIdMap.get(option.app) || 'com.google.Chrome';
-
-		return getStdout('osascript', [
-			'-l',
-			'JavaScript',
-			require.resolve('./jxa.js'),
-			id
-		]).then(stdout => { // eslint-disable-line promise/prefer-await-to-then
-			const result = JSON.parse(stdout);
-
-			if (result.appNotRunning) {
-				const error = new Error(result.message);
-				error.code = 'ERR_APP_NOT_RUNNING';
-				error.bundleId = id;
-
-				throw error;
-			}
-
-			return result;
-		});
-	};
+	module.exports = require('./osx')
 
 	/*
 	const re = /(?<=___###___message___###___).*(?=___###___message___###___)/;
@@ -78,14 +22,5 @@ if (process.platform === 'darwin') {
 	};
 	*/
 } else {
-	module.exports = function getChromeTabs() {
-		const platformName = require('platform-name');
-
-		const error = new Error(`get-chrome-tabs only supports macOS, but the current platform is ${
-			platformName()
-		}.`);
-		error.code = 'ERR_UNSUPPORTED_PLATFORM';
-
-		return Promise.reject(error);
-	};
+	module.exports = require('./unsupported')
 }
