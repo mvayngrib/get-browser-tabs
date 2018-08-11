@@ -1,20 +1,21 @@
-# get-chrome-tabs
+# get-browser-tabs
 
-[![npm version](https://img.shields.io/npm/v/get-chrome-tabs.svg)](https://www.npmjs.com/package/get-chrome-tabs)
-[![Build Status](https://travis-ci.com/shinnn/get-chrome-tabs.svg?branch=master)](https://travis-ci.com/shinnn/get-chrome-tabs)
-[![Coverage Status](https://img.shields.io/coveralls/shinnn/get-chrome-tabs.svg)](https://coveralls.io/github/shinnn/get-chrome-tabs?branch=master)
+forked from https://github.com/shinnn/get-browser-tabs/
+
+Get information of the currently opened tabs in a given browser:
+
+Collects:
+- url
+- title
 
 <img src="screenshot.png" align="right" width="460">
 
-Get information of the currently opened [Chrome](https://www.google.cm/chrome/) tabs, for example URLs and titles
-
-&nbsp;
-
 ```javascript
-const getChromeTabs = require('get-chrome-tabs');
+const getBrowserTabs = require('get-browser-tabs');
 
-(async () => getChromeTabs() /* => [
+(async () => getBrowserTabs() /* => [
   {
+    browser: 'chrome',
     windowIndex: 0,
     windowVisible: true,
     url: 'https://github.com/',
@@ -23,14 +24,16 @@ const getChromeTabs = require('get-chrome-tabs');
     loading: false
   },
   {
+    browser: 'chrome',
     windowIndex: 0,
     windowVisible: true,
-    url: 'https://www.npmjs.com/package/get-chrome-tabs',
-    title: 'get-chrome-tabs - npm',
+    url: 'https://www.npmjs.com/package/get-browser-tabs',
+    title: 'get-browser-tabs - npm',
     active: false,
     loading: false
   },
   {
+    browser: 'chrome',
     windowIndex: 1,
     windowVisible: true,
     url: 'https://example.org/',
@@ -46,16 +49,16 @@ const getChromeTabs = require('get-chrome-tabs');
 [Use](https://docs.npmjs.com/cli/install) [npm](https://docs.npmjs.com/getting-started/what-is-npm).
 
 ```
-npm install get-chrome-tabs
+npm install get-browser-tabs
 ```
 
 ## API
 
 ```javascript
-const getChromeTabs = require('get-chrome-tabs');
+const getBrowserTabs = require('get-browser-tabs');
 ```
 
-### getChromeTabs([*option*])
+### getBrowserTabs([*option*])
 
 *option*: `Object`  
 Return: `Promise<Array<Object>>`  
@@ -71,25 +74,24 @@ Each object included in the resultant array has the following properties:
 * active `boolean` – Whether the tab is currently selected or not. Each window has one active tab.
 * loading `boolean` - Whether the tab is loading or not
 
-It will be rejected when Chrome is not running.
+It will be rejected when the specified browser is not running.
 
 ### option.app
 
-Type: `string` (either `'canary'` or `'chromium'`)
-
-Instead of Chrome (default), refer to [Chrome Canary](https://www.google.com/chrome/canary/) or [Chromium](https://www.chromium.org/Home).
+Type: `string` 
+one of: canary, chrome, opera, firefox, safari, safari-tech-preview
 
 ```javascript
 // When Chrome is not running but Chrome Canary is running
 
 (async () => {
   try {
-    await getChromeTabs();
+    await getBrowserTabs();
   } catch (err) {
     err.message; //=> 'Tried to get tabs of Chrome, but Chrome is currently not running.'
   }
 
-  await getChromeTabs({app: 'canary'}); //=> [{windowIndex: 0, windowVisible: true, ...}, ...]
+  await getBrowserTabs({app: 'canary'}); //=> [{windowIndex: 0, windowVisible: true, ...}, ...]
 })();
 
 ```
@@ -97,3 +99,4 @@ Instead of Chrome (default), refer to [Chrome Canary](https://www.google.com/chr
 ## License
 
 [ISC License](./LICENSE) © 2018 Shinnosuke Watanabe
+[ISC License](./LICENSE) © 2018 Mark Vayngrib
